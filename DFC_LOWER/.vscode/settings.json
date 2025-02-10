@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "random": "cpp",
+        "cstdint": "cpp",
+        "can.h": "c",
+        "main.h": "c",
+        "gpio.h": "c",
+        "ratio": "cpp",
+        "*.tcc": "cpp",
+        "main_task.hpp": "c",
+        "numbers": "cpp",
+        "compare": "cpp"
+    }
+}
