@@ -139,6 +139,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan_rx)
                 can_test[rx_header2.StdId - CAN_TSET_ID] = can2_rx_data[0];       //CAN通信测试
             }
         }
+        rx_can_flag++;
     }
     HAL_CAN_ActivateNotification(hcan_rx, CAN_IT_RX_FIFO1_MSG_PENDING); // 再次使能FIFO0接收中断
 }

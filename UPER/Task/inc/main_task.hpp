@@ -47,6 +47,8 @@ void Runon_cannot(void);
 void Runon_can(void);
 void Runon_ing(void);
 void Runon_already(void);
+void setCommData(void);
+void SendMsg(void);
 
 #ifdef __cplusplus
 }

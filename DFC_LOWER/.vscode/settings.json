@@ -9,6 +9,8 @@
         "*.tcc": "cpp",
         "main_task.hpp": "c",
         "numbers": "cpp",
-        "compare": "cpp"
+        "compare": "cpp",
+        "bit": "cpp",
+        "format": "cpp"
     }
 }

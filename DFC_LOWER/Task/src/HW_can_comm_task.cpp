@@ -101,9 +101,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan_rx)
             { // 帧头校验
                 // 校验通过进行具体数据处理
                 upcommand.SetRawCommand(can1_rx_data[0]); // 解析数据
-                upcommand.SetFanShowState((can1_rx_data[0]>>3)&0x03);
-                upcommand.SetBufState((can1_rx_data[0]>>1)&0x03);
-                upcommand.SetColour(can1_rx_data[0]&0x01);
+                upcommand.SetFanShowState((can1_rx_data[0]>>4)&0x03);
+                upcommand.SetBufState((can1_rx_data[0]>>2)&0x03);
+                upcommand.SetColour(can1_rx_data[0]&0x03);
             }
         }
     }
@@ -148,7 +148,7 @@ void CAN_Send_Msg(CAN_HandleTypeDef *hcan, uint8_t *msg, uint32_t id, uint8_t le
     TxMessageHeader.IDE = CAN_ID_STD;
     TxMessageHeader.RTR = CAN_RTR_DATA;
     TxMessageHeader.DLC = len;
-    if (HAL_CAN_AddTxMessage(hcan, &TxMessageHeader, msg, &pTxMailbox) != HAL_OK)
+    if (HAL_CAN_AddTxMessage(hcan, &TxMessageHeader, msg, &pTxMailbox) == HAL_OK)
     {
         tx_can_flag++;
     }

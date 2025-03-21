@@ -121,7 +121,7 @@ void get_shoot_ring(void)
             TxData = ((upcommand.GetFanShowState()) << 4) | num_shoot_ring;
             CAN_Send_Msg(&hcan, &TxData, SLV_BASEADDR + SLV_ID, 1);
         }
-        else if(((upcommand.GetFanShowState())== FAN_IDLE||(upcommand.GetFanShowState()==FAN_ACTIVATED))&&((shoot_tick-last_shoot_tick)>1000))
+        else if(((upcommand.GetFanShowState())== FAN_IDLE||(upcommand.GetFanShowState()==FAN_ACTIVATED))&&((shoot_tick-last_shoot_tick)>500))
         {
             (upcommand.SetFanShowState(FAN_ILLEGAL));
             TxData = ((upcommand.GetFanShowState())<< 4) | num_shoot_ring;

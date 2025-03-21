@@ -22,7 +22,6 @@
 #include "iwdg.h"
 #include "motor_task.hpp"
 #include "tim.h"
-// TODO
 /* Private macro -------------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
 hw_motor::Motor *Roll_motor_ptr = CreateMotorRoll();
@@ -33,7 +32,7 @@ hw_comm::CanRxMgr *can_rx_mgr_ptr = CreateCan1RxMgr();
 hw_comm::CanTxMgr *can_tx_mgr_ptr = CreateCan1TxMgr();
 hw_comm::UartRxMgr *uart_rx_mgr_ptr = CreateRcRxMgr();
 /* Private types -------------------------------------------------------------*/
-buf_t buf(0, 0);
+buf_t buf(2, 2);
 /* Private variables ---------------------------------------------------------*/
 
 // float spd_ref_ = 0.0f;
@@ -48,7 +47,7 @@ uint8_t buf_mode = kBufMode_cannot;
 uint8_t generate_flag = 0;
 
 /* External variables --------------------------------------------------------*/
-
+extern uint8_t none_idle_flag;
 /* Private function prototypes -----------------------------------------------*/
 void RefreshIwdg(void) { HAL_IWDG_Refresh(&hiwdg); }
 void MainTaskInit() {
@@ -142,7 +141,7 @@ void Runon_ing(void) {
   if (is_already()) {
     ing_tick = 0;
     buf_mode = kBufMode_already;
-  }else if(Illegal_hit_detection()) {
+  } else if (Illegal_hit_detection()) {
     ing_tick = 0;
   } else {
     ing_tick++;
@@ -150,15 +149,48 @@ void Runon_ing(void) {
 }
 
 void Runon_already(void) {
+  // static uint32_t already_tick = 0;
   Motor_Stop();
- // Motor_Task(buf.buf_state, ing_tick, dirction); #TODO 不确定全部激活后是否需要旋转
+  // Motor_Task(buf.buf_state, ing_tick, dirction); #TODO
+  // 不确定全部激活后是否需要旋转
   Fan_Show_Task(buf.buf_state, buf.colour);
+    //   if (already_tick <= 750) {
+    //   already_tick++;
+    // } else {
+    //   already_tick = 0;
+    //   All_Fan_Show_Turn_Off();
+    //   none_idle_flag = 0;
+    //   buf_mode = kBufMode_can;
+    // }
+}
+
+void Buf_task(void) {
+  switch (buf_mode) {
+  case kBufMode_cannot:
+    Runon_cannot();
+    break;
+  case kBufMode_can:
+    Runon_can();
+    break;
+  case kBufMode_ing:
+    Runon_ing();
+    break;
+  case kBufMode_already:
+    Runon_already();
+    break;
+  default:
+    buf.reset();
+    Motor_Stop();
+    break;
+  }
 }
 
 void MainTask() {
-  // if (tick % 100 == 0) {
-  R_Logo_Show(RED);
-  // }
+  RcSetMode();
+  Motor_Update();
+  Buf_task();
+  setCommData();
+  SendMsg();
 }
 
 void setCommData() {
@@ -171,10 +203,21 @@ void setCommData() {
   }
 }
 
+uint8_t i_start[10] = {0, 0, 0, 0, 0, 3, 0, 0, 0, 0};
+uint8_t i_end[10] = {3, 0, 0, 0, 0,5, 0, 0, 0, 0}; // 尚且不知其对于防止can2紊乱的必要性故先不用
 void SendMsg() {
   can_tx_mgr_ptr->setTransmitterNeedToTransmit(Roll_motor_ptr);
   can_tx_mgr_ptr->startTransmit();
-  // #TODO 增加需要板件通讯的发送数据
+  static uint8_t TxData = 0;
+  // for (uint8_t i = 0; i < 5; i++) {
+  //   TxData = (buf.fan_target[i].fan_show_state << 4) | (buf.buf_state << 2) | buf.colour;
+  //   CAN_Send_Msg(&hcan2, &TxData, MASTER_BASEADDR + i, 1);
+  // }
+    for(uint8_t i = i_start[tick % 10]; i < i_end[tick % 10]; i++)
+  {
+      TxData = (buf.fan_target[i].fan_show_state << 4) | (buf.buf_state <<2) | buf.colour;
+      CAN_Send_Msg(&hcan2, &TxData, MASTER_BASEADDR + i, 1);
+  }
 }
 
 /**
@@ -205,11 +248,36 @@ int is_already(void) {
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   if (htim == &htim6) {
     MainTask();
-    HAL_IWDG_Refresh(&hiwdg);
+    // HAL_IWDG_Refresh(&hiwdg);//BLYTEST
     tick++;
   }
 }
 
+
+
+/* 接收回调函数 */
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
+  can_rx_mgr_ptr->rxFifoMsgPendingCallback(hcan);
+}
+
+/* 发送回调函数 */
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan) {
+  can_tx_mgr_ptr->txMailboxCompleteCallback(hcan);
+}
+
+/* 错误回调函数 */
+void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
+  can_tx_mgr_ptr->errorCallback(hcan);
+  can_rx_mgr_ptr->errorCallback(hcan);
+}
+
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+  uart_rx_mgr_ptr->rxEventCallback(huart, Size);
+}
+/* 错误回调 */
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
+  uart_rx_mgr_ptr->errorCallback(huart);
+}
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
-  HAL_TIM_PWM_Stop_DMA(&htim8, TIM_CHANNEL_3);
+  // HAL_TIM_PWM_Stop_DMA(&htim8, TIM_CHANNEL_3);
 }

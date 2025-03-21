@@ -30,7 +30,7 @@ void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour) {
   static uint8_t target_fan_ID;
   static uint32_t fan_tick = 0;
   static uint8_t none_idle_flag = 0;
-  if (buf_mode == kBufMode_already) {
+   if (buf_mode == kBufMode_already) {
     if (fan_tick <= 750) {
       fan_tick++;
     } else {
@@ -42,6 +42,7 @@ void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour) {
   } else if (none_idle_flag == 0) {
     if (fan_tick == 0) {
       target_fan_ID = Get_Rand_Idle_Fan(buf_state);
+
       fan_tick++;
       if (target_fan_ID == NONE_IDLE) {
         none_idle_flag = 1;

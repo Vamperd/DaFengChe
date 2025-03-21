@@ -25,11 +25,10 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "main_task.hpp"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "main_task.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -104,11 +103,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
   MainTaskInit();
   HAL_TIM_Base_Start_IT(&htim6);
-  HAL_IWDG_Init(&hiwdg);
+  // HAL_IWDG_Init(&hiwdg);
   HAL_TIM_Base_Start_IT(&htim8);
   /* USER CODE END 2 */
-  
-  HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_SET);
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

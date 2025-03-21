@@ -76,6 +76,26 @@
         "sstream": "cpp",
         "stop_token": "cpp",
         "ranges": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "dma.h": "c",
+        "usart.h": "c",
+        "ios": "cpp",
+        "list": "cpp",
+        "locale": "cpp",
+        "queue": "cpp",
+        "unordered_set": "cpp",
+        "xfacet": "cpp",
+        "xhash": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocinfo": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp",
+        "xtr1common": "cpp",
+        "xtree": "cpp",
+        "gpio.h": "c"
     }
 }

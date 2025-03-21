@@ -51,7 +51,7 @@ void Motor_Update(){
 }
 
 void Moter_Big_Buf_Task(uint32_t tick_task, int8_t dirction){
-    double work_time = (double)tick_task / 500.0;
+    double work_time = (double)(tick_task / 500.0);
     static float a;
     static float w;
     static float b;
