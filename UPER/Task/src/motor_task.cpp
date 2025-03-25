@@ -62,11 +62,11 @@ void Moter_Big_Buf_Task(uint32_t tick_task, int8_t dirction){
         b = BIG_BUF_B_ERR - a;
         generate_flag = 0;
     }
-    float ang_ref_=ang_fdb_+dirction*(a*arm_sin_f32(w*work_time)+b)*0.002f;
-    float ref = ang_ref_;
-    float fdb[2] = {ang_fdb_, spd_fdb_};
+    float spd_ref_big=dirction*(a*arm_sin_f32(w*work_time)+b)*10.0f/3.0f;
+    // float ang_ref_=ang_fdb_+dirction*(a*arm_sin_f32(w*work_time)+b)*0.002f;
+    float ref =spd_ref_big;
+    float fdb[1] = { spd_fdb_};
     Big_buf_pid_ptr->calc(&ref, fdb, nullptr, &cur_ref_);
-    spd_ref_ = Big_buf_pid_ptr->getDatasAt(1).ref;
 }
 
 void Moter_Small_Buf_Task(int8_t dirction){

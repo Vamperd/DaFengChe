@@ -36,7 +36,7 @@ void MainTask() {
     get_shoot_ring();
     fan_show(upcommand.GetColour(),upcommand.GetFanShowState(),upcommand.GetBufState(),valuable_num_shoot_ring);
     }
-  //# TEST
+  // //# TEST
   // if(tick%80000==0){
   //   upcommand.SetFanShowState(FAN_ACTIVATABLE);
   //   CAN_Send_Msg(&hcan, &valuable_num_shoot_ring, SLV_BASEADDR + SLV_ID, 1);
@@ -48,9 +48,9 @@ void MainTaskInit() {
   HAL_CAN_Start(&hcan);
   HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING); 
   ws2812_init();
-  // upcommand.SetBufState(BIG_BUF);
-  // upcommand.SetColour(RED);
-  // upcommand.SetFanShowState(FAN_ACTIVATABLE); //test
+  upcommand.SetBufState(BIG_BUF);
+  upcommand.SetColour(RED);
+  upcommand.SetFanShowState(FAN_ACTIVATABLE); //test
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {

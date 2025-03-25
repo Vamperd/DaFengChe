@@ -76,7 +76,7 @@ void RcSetMode() {
   case hw_rc::SwitchState::kMid: // #TODO 更改为停转长亮模式
     buf.colour = DARK;
     buf.reset();
-    dirction = -1 * dirction;
+    dirction = 0;
     break;
   case hw_rc::SwitchState::kDown:
     buf.colour = RED;
@@ -191,6 +191,7 @@ void MainTask() {
   Buf_task();
   setCommData();
   SendMsg();
+    R_Logo_Show(RED);//test
 }
 
 void setCommData() {

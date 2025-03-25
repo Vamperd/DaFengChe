@@ -26,28 +26,14 @@ const hw_pid::MultiNodesPid::ParamsList kPidParamsSmall_Buf = {
 };
 
 const hw_pid::MultiNodesPid::ParamsList kPidParamsBig_Buf = {
-{
-     .auto_reset = true,
-     .kp = 12,//8,不开摩擦轮时的参数
-     .ki = 0.02,//0.05,
-     .kd = 0,
-     .setpoint_ramping = hw_pid::SetpointRamping(false, -0.1, 0.1, 0.1),
-     .period_sub = hw_pid::PeriodSub(true, 2 * PI),
-     .inte_anti_windup = hw_pid::InteAntiWindup(true, -2.0f, 2.0f),
-    //  .inte_separation = hw_pid::InteSeparation(true, -1.0 / 180 * PI, 1.0 / 180 * PI),
-     .inte_changing_rate = hw_pid::InteChangingRate(true, 0.1 /180 * PI, 5.0 / 180 * PI),
-     .diff_filter = hw_pid::DiffFilter(false, -0.0f, 0.0f, 0.0f),
-     .out_limit = hw_pid::OutLimit(true, -40, 40),
-     },
     {
      .auto_reset = true,
-     .kp = 1.4,//0.6,
-     .ki = 0,
-     .kd = 0,
+     .kp = 5.0f,
+     .ki = 0.0f,
+     .kd = 0.0f,
      .setpoint_ramping = hw_pid::SetpointRamping(false, -0.1, 0.1, 0.1),
-     .period_sub = hw_pid::PeriodSub(false, 0),
-     .diff_filter = hw_pid::DiffFilter(false, 0.0f, 0.0f, 0.0f),
-     .diff_previous = hw_pid::DiffPrevious(false, 0.5f),
+     .inte_anti_windup = hw_pid::InteAntiWindup(true, -1.0f, 1.0f),
+     .diff_previous = hw_pid::DiffPrevious(false, 0.01f),
      .out_limit = kOutLimitRoll,
      },
 };

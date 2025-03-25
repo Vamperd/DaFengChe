@@ -76,8 +76,8 @@ static uint16_t cross_led_index[40] = {
 
 /* Private variables ---------------------------------------------------------*/
 uint16_t colour_rgb[3][3] = {
-    {0, 0, 50}, // 蓝色的RGB
-    {50, 0, 0}, // 红色的RGB
+    {0, 0, 80}, // 蓝色的RGB
+    {80, 0, 0}, // 红色的RGB
     {0, 0, 0}   // 不亮的RGB
 };
 
@@ -180,7 +180,7 @@ void ws2812_test(void) {
  **/
 void fan_frame_show(uint8_t colour, uint8_t fan_state) {
   uint16_t r, g, b;
-  if (fan_state == FAN_IDLE || fan_state == FAN_ILLEGAL) {
+  if (fan_state == FAN_IDLE || fan_state == FAN_ILLEGAL/*||fan_state == FAN_ACTIVATABLE*/) {
     colour = DARK;
   }
   r = colour_rgb[colour][0];

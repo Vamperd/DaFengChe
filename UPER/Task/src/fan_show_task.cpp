@@ -31,7 +31,7 @@ void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour) {
   static uint32_t fan_tick = 0;
   static uint8_t none_idle_flag = 0;
    if (buf_mode == kBufMode_already) {
-    if (fan_tick <= 750) {
+    if (fan_tick <= 1000) {
       fan_tick++;
     } else {
       fan_tick = 0;

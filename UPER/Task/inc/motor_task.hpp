@@ -18,7 +18,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "ins_all.hpp"
 /* Exported macro ------------------------------------------------------------*/
-#define SMALL_BUF_SPEED     (PI/3.0f)          //单位：rad/s
+#define SMALL_BUF_SPEED     (PI/3.0f*10.0f/3.0f)          //单位：rad/s
 #define BIG_BUF_A_MIN       (0.780f)
 #define BIG_BUF_A_MAX       (1.045f)
 #define BIG_BUF_W_MIN       (1.884f)
