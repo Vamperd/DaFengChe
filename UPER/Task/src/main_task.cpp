@@ -136,6 +136,7 @@ void Runon_can(void) {
 
 void Runon_ing(void) {
   static uint32_t ing_tick = 0;
+  R_Logo_Show(buf.colour);
   Motor_Task(buf.buf_state, ing_tick, dirction);
   Fan_Show_Task(buf.buf_state, buf.colour);
   if (is_already()) {
@@ -151,17 +152,18 @@ void Runon_ing(void) {
 void Runon_already(void) {
   // static uint32_t already_tick = 0;
   Motor_Stop();
+  R_Logo_Show(buf.colour);
   // Motor_Task(buf.buf_state, ing_tick, dirction); #TODO
   // 不确定全部激活后是否需要旋转
   Fan_Show_Task(buf.buf_state, buf.colour);
-    //   if (already_tick <= 750) {
-    //   already_tick++;
-    // } else {
-    //   already_tick = 0;
-    //   All_Fan_Show_Turn_Off();
-    //   none_idle_flag = 0;
-    //   buf_mode = kBufMode_can;
-    // }
+  //   if (already_tick <= 750) {
+  //   already_tick++;
+  // } else {
+  //   already_tick = 0;
+  //   All_Fan_Show_Turn_Off();
+  //   none_idle_flag = 0;
+  //   buf_mode = kBufMode_can;
+  // }
 }
 
 void Buf_task(void) {
@@ -191,7 +193,6 @@ void MainTask() {
   Buf_task();
   setCommData();
   SendMsg();
-    R_Logo_Show(RED);//test
 }
 
 void setCommData() {
@@ -205,19 +206,20 @@ void setCommData() {
 }
 
 uint8_t i_start[10] = {0, 0, 0, 0, 0, 3, 0, 0, 0, 0};
-uint8_t i_end[10] = {3, 0, 0, 0, 0,5, 0, 0, 0, 0}; // 尚且不知其对于防止can2紊乱的必要性故先不用
+uint8_t i_end[10] = {3, 0, 0, 0, 0, 5,
+                     0, 0, 0, 0}; // 尚且不知其对于防止can2紊乱的必要性故先不用
 void SendMsg() {
   can_tx_mgr_ptr->setTransmitterNeedToTransmit(Roll_motor_ptr);
   can_tx_mgr_ptr->startTransmit();
   static uint8_t TxData = 0;
   // for (uint8_t i = 0; i < 5; i++) {
-  //   TxData = (buf.fan_target[i].fan_show_state << 4) | (buf.buf_state << 2) | buf.colour;
-  //   CAN_Send_Msg(&hcan2, &TxData, MASTER_BASEADDR + i, 1);
+  //   TxData = (buf.fan_target[i].fan_show_state << 4) | (buf.buf_state << 2) |
+  //   buf.colour; CAN_Send_Msg(&hcan2, &TxData, MASTER_BASEADDR + i, 1);
   // }
-    for(uint8_t i = i_start[tick % 10]; i < i_end[tick % 10]; i++)
-  {
-      TxData = (buf.fan_target[i].fan_show_state << 4) | (buf.buf_state <<2) | buf.colour;
-      CAN_Send_Msg(&hcan2, &TxData, MASTER_BASEADDR + i, 1);
+  for (uint8_t i = i_start[tick % 10]; i < i_end[tick % 10]; i++) {
+    TxData = (buf.fan_target[i].fan_show_state << 4) | (buf.buf_state << 2) |
+             buf.colour;
+    CAN_Send_Msg(&hcan2, &TxData, MASTER_BASEADDR + i, 1);
   }
 }
 
@@ -253,8 +255,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     tick++;
   }
 }
-
-
 
 /* 接收回调函数 */
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
