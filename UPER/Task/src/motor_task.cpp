@@ -14,6 +14,7 @@
  */
 /* Includes ------------------------------------------------------------------*/
 #include "motor_task.hpp"
+#include "buf.hpp"
 #include "arm_math.h"
 #include "rng.h"
 /* Private macro -------------------------------------------------------------*/

@@ -31,24 +31,10 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
-enum BufMode_{
-  kBufMode_cannot=1u,
-  kBufMode_can=2u,
-  kBufMode_ing=3u,
-  kBufMode_already=4u,
-};
 /* Exported variables --------------------------------------------------------*/
 /* Exported function prototypes ----------------------------------------------*/
 void MainTaskInit(void);
 void MainTask(void);
-int Illegal_hit_detection(void);
-int is_already(void);
-void Runon_cannot(void);
-void Runon_can(void);
-void Runon_ing(void);
-void Runon_already(void);
-void setCommData(void);
-void SendMsg(void);
 
 #ifdef __cplusplus
 }

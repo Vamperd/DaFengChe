@@ -15,6 +15,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "fan_show_task.hpp"
 #include "main_task.hpp"
+#include "buf.hpp"
 #include "rng.h"
 /* Private macro -------------------------------------------------------------*/
 #define FAN_COUNT 5
