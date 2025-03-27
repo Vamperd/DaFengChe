@@ -22,7 +22,7 @@
 #define NONE_IDLE   10
 /* Exported types ------------------------------------------------------------*/
 
-void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour);
+void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour,bool vision_flag);
 void All_Fan_Show_Turn_Off(void);
 uint8_t Get_Rand_Idle_Fan(uint8_t buf_state);
 

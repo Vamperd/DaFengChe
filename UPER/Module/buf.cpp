@@ -26,6 +26,7 @@ hw_comm::UartRxMgr *uart_rx_mgr_ptr = CreateRcRxMgr();
 /* Private types -------------------------------------------------------------*/
 buf_t buf(2, 2);
 /* Private variables ---------------------------------------------------------*/
+bool vision_flag = false;
 float cur_ref_ = 0.0f;
 float cur_fdb_ = 0.0f;
 int8_t dirction = 1;
@@ -36,7 +37,7 @@ extern uint8_t none_idle_flag;
 extern uint32_t tick;
 /* Private function prototypes -----------------------------------------------*/
 void RefreshIwdg(void) { HAL_IWDG_Refresh(&hiwdg); }
-
+#pragma region 主控函数
 void BufUpdate(void) {
   RcSetMode();
   Motor_Update();
@@ -44,16 +45,14 @@ void BufUpdate(void) {
 
 void BufRun(void) {
   Buf_task();
+  vision_task();
   setCommData();
   SendMsg();
 }
 
-void BufInit(void) {
-    
-  buf.reset();
-}
+void BufInit(void) { buf.reset(); }
 
-#pragma region  BUF函数
+#pragma region BUF函数
 void Buf_task(void) {
   switch (buf_mode) {
   case kBufMode_cannot:
@@ -96,7 +95,7 @@ void Runon_ing(void) {
   static uint32_t ing_tick = 0;
   R_Logo_Show(buf.colour);
   Motor_Task(buf.buf_state, ing_tick, dirction);
-  Fan_Show_Task(buf.buf_state, buf.colour);
+  Fan_Show_Task(buf.buf_state, buf.colour, vision_flag);
   if (is_already()) {
     ing_tick = 0;
     buf_mode = kBufMode_already;
@@ -113,7 +112,7 @@ void Runon_already(void) {
   R_Logo_Show(buf.colour);
   // Motor_Task(buf.buf_state, ing_tick, dirction); #TODO
   // 不确定全部激活后是否需要旋转
-  Fan_Show_Task(buf.buf_state, buf.colour);
+  Fan_Show_Task(buf.buf_state, buf.colour, vision_flag);
   //   if (already_tick <= 750) {
   //   already_tick++;
   // } else {
@@ -124,7 +123,7 @@ void Runon_already(void) {
   // }
 }
 
-#pragma region  控制指令
+#pragma region 控制指令
 void RcSetMode() {
   switch (rc_ptr->rc_r_switch()) {
   case hw_rc::SwitchState::kUp:
@@ -165,17 +164,34 @@ void RcSetMode() {
     Motor_Stop();
     break;
   }
-  if (rc_ptr->rc_wheel() > 0 &&
-      rc_ptr->rc_wheel() <
-          1.5) { // #TODO 由于对于遥控器拨轮值有问题，故正反转临界可能需要更改
+  if (rc_ptr->rc_wheel() >
+      0.1f) { // #TODO 由于对于遥控器拨轮值有问题，故正反转临界可能需要更改
     dirction = 1;
-  } else if (rc_ptr->rc_wheel() > 1.5) {
+  } else if (rc_ptr->rc_wheel() < -0.1f) {
     dirction = -1;
   }
 }
+#pragma region 视觉调试函数
 
+void vision_task() {
+  if (rc_ptr->rc_l_switch() == hw_rc::SwitchState::kMid &&
+      rc_ptr->rc_r_switch() == hw_rc::SwitchState::kMid) {
+    if (rc_ptr->rc_wheel() > 0.1f) {
+      buf.colour = BLUE;
+    } else if (rc_ptr->rc_wheel() < -0.1f) {
+      buf.colour = RED;
+    } else {
+      buf.colour = DARK;
+    }
+      R_Logo_Show(buf.colour);
+      Motor_Stop();
+      vision_flag=true;
+        Fan_Show_Task(buf.buf_state, buf.colour,vision_flag);
+  } else {vision_flag=false;
+   return;}
+}
 
-#pragma region  通讯函数
+#pragma region 通讯函数
 
 void CommInit(void) {
   can_rx_mgr_ptr->addReceiver(Roll_motor_ptr);
@@ -221,7 +237,7 @@ void SendMsg() {
   }
 }
 
-#pragma region  扇叶函数
+#pragma region 扇叶函数
 /**
  * @brief 检测是否有扇叶在非法状态下被击打
  * @retval 返回0表示有扇叶在非法状态下（已激活状态或者空闲状态）被击打
@@ -247,8 +263,7 @@ int is_already(void) {
   return already_flag;
 }
 
-
-#pragma region  通讯回调
+#pragma region 通讯回调
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   can_rx_mgr_ptr->rxFifoMsgPendingCallback(hcan);
 }

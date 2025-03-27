@@ -14,8 +14,8 @@
  */
 /* Includes ------------------------------------------------------------------*/
 #include "fan_show_task.hpp"
-#include "main_task.hpp"
 #include "buf.hpp"
+#include "main_task.hpp"
 #include "rng.h"
 /* Private macro -------------------------------------------------------------*/
 #define FAN_COUNT 5
@@ -27,11 +27,11 @@ extern buf_t buf;
 extern uint8_t buf_mode;
 /* Private function prototypes -----------------------------------------------*/
 
-void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour) {
+void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour, bool vision_flag) {
   static uint8_t target_fan_ID;
   static uint32_t fan_tick = 0;
   static uint8_t none_idle_flag = 0;
-   if (buf_mode == kBufMode_already) {
+  if (buf_mode == kBufMode_already) {
     if (fan_tick <= 1000) {
       fan_tick++;
     } else {
@@ -40,10 +40,12 @@ void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour) {
       none_idle_flag = 0;
       buf_mode = kBufMode_can;
     }
+  } else if (vision_flag) {
+    target_fan_ID = 4;
+    buf.fan_target[target_fan_ID].fan_show_state = FAN_ACTIVATABLE;
   } else if (none_idle_flag == 0) {
     if (fan_tick == 0) {
       target_fan_ID = Get_Rand_Idle_Fan(buf_state);
-
       fan_tick++;
       if (target_fan_ID == NONE_IDLE) {
         none_idle_flag = 1;
@@ -61,7 +63,7 @@ void Fan_Show_Task(uint8_t buf_state, uint8_t buf_colour) {
       fan_tick++;
     }
   }
-  if(Illegal_hit_detection()){
+  if (Illegal_hit_detection()) {
     none_idle_flag = 0;
   }
 }

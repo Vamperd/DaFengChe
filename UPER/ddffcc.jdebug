@@ -23,7 +23,7 @@ void OnProjectLoad (void) {
   // Dialog-generated settings
   //
   Project.SetDevice ("STM32F407IG");
-  Project.SetHostIF ("USB", "69665094");
+  Project.SetHostIF ("USB", "1047497655");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
   Project.AddPathSubstitute ("C:/Users/86136/Desktop/code/DaFengChe/UPER", "$(ProjectDir)");

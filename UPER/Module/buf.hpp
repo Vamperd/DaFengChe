@@ -46,6 +46,8 @@ void Runon_can(void);
 void Runon_ing(void);
 void Runon_already(void);
 
+void vision_task(void);
+
 void CommInit(void);
 void setCommData(void);
 void SendMsg(void);
