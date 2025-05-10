@@ -64,6 +64,7 @@ void Moter_Big_Buf_Task(uint32_t tick_task, int8_t dirction){
         generate_flag = 0;
     }
     float spd_ref_big=dirction*(a*arm_sin_f32(w*work_time)+b)*10.0f/3.0f;
+    spd_ref_=spd_ref_big;
     // float ang_ref_=ang_fdb_+dirction*(a*arm_sin_f32(w*work_time)+b)*0.002f;
     float ref =spd_ref_big;
     float fdb[1] = { spd_fdb_};
@@ -72,6 +73,13 @@ void Moter_Big_Buf_Task(uint32_t tick_task, int8_t dirction){
 
 void Moter_Small_Buf_Task(int8_t dirction){
     spd_ref_=dirction * SMALL_BUF_SPEED;
+    float ref = spd_ref_;
+    float fdb[1] = {spd_fdb_};
+    small_buf_pid_ptr->calc(&ref, fdb, nullptr, &cur_ref_);
+}
+
+void Motor_vision_run(float speed){
+    spd_ref_=speed;
     float ref = spd_ref_;
     float fdb[1] = {spd_fdb_};
     small_buf_pid_ptr->calc(&ref, fdb, nullptr, &cur_ref_);

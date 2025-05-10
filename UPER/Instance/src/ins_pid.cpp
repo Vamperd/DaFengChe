@@ -15,8 +15,8 @@ const hw_pid::OutLimit kOutLimitRoll = hw_pid::OutLimit(true, -kMaxPidOutRoll, k
 const hw_pid::MultiNodesPid::ParamsList kPidParamsSmall_Buf = {
     {
      .auto_reset = true,
-     .kp = 5.0f,
-     .ki = 0.0f,
+     .kp = 4.5f,
+     .ki = 0.01f,
      .kd = 0.0f,
      .setpoint_ramping = hw_pid::SetpointRamping(false, -0.1, 0.1, 0.1),
      .inte_anti_windup = hw_pid::InteAntiWindup(true, -1.0f, 1.0f),

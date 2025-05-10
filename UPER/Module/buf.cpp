@@ -27,8 +27,11 @@ hw_comm::UartRxMgr *uart_rx_mgr_ptr = CreateRcRxMgr();
 buf_t buf(2, 2);
 /* Private variables ---------------------------------------------------------*/
 bool vision_flag = false;
+
 float cur_ref_ = 0.0f;
 float cur_fdb_ = 0.0f;
+float vision_target_speed = 0.0f;
+
 int8_t dirction = 1;
 uint8_t buf_mode = kBufMode_cannot;
 uint8_t generate_flag = 0;
@@ -183,12 +186,22 @@ void vision_task() {
     } else {
       buf.colour = DARK;
     }
-      R_Logo_Show(buf.colour);
-      Motor_Stop();
-      vision_flag=true;
-        Fan_Show_Task(buf.buf_state, buf.colour,vision_flag);
-  } else {vision_flag=false;
-   return;}
+    if(rc_ptr->rc_rv() > 0.1f){
+      vision_target_speed = SMALL_BUF_SPEED;
+      }else if(rc_ptr->rc_rv() < -0.1f){
+        vision_target_speed = (-1)*SMALL_BUF_SPEED;
+      }else{
+        vision_target_speed = 0.0f;
+      }
+    R_Logo_Show(buf.colour);
+    Motor_vision_run(vision_target_speed);
+    vision_flag = true;
+    Fan_Show_Task(buf.buf_state, buf.colour, vision_flag);
+
+  } else {
+    vision_flag = false;
+    return;
+  }
 }
 
 #pragma region 通讯函数

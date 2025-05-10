@@ -15,7 +15,7 @@ extern "C"
 #define SLV_BASEADDR    0x100
 
  //#TODO ID顺序由布线等原因待定 
- #define SLV_ID          0x01    // 从1开始 
+ #define SLV_ID          0x05    // 从1开始 
 // #define SLV_ID          0x02    // 从1开始 
 // #define SLV_ID          0x03    // 从1开始 
 // #define SLV_ID          0x04    // 从1开始 

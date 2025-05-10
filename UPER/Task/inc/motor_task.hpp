@@ -31,6 +31,7 @@ void Moter_Big_Buf_Task(uint32_t tick_task,int8_t dirction);
 void Moter_Small_Buf_Task(int8_t dirction);
 void Motor_Update(void);
 void Motor_Stop(void);
+void Motor_vision_run(float speed);
 float Get_Rand_Num(float min, float max);
 
 
